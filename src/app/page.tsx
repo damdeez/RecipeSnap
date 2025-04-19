@@ -1,10 +1,10 @@
 'use client';
 
 import {useState} from 'react';
-import {Button} from '@/components/ui/Button';
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/Card';
-import {Input} from '@/components/ui/Input';
-import {Textarea} from '@/components/ui/Textarea';
+import {Button} from '@/components/Ui/Button';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/Ui/Card';
+import {Input} from '@/components/Ui/Input';
+import {Textarea} from '@/components/Ui/Textarea';
 import {detectIngredients} from '@/ai/flows/detect-ingredients';
 import {findRecipes} from '@/ai/flows/find-recipes';
 import {adaptRecipe} from '@/ai/flows/adapt-recipe';
@@ -24,9 +24,11 @@ export default function Home() {
   const [isImageUploaded, setIsImageUploaded] = useState(false);
   const {toast} = useToast();
   const [copied, setCopied] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const handleImageUpload = async () => {
     setIsImageUploaded(false);
+    setUploadingImage(true);
 
     let photoData: string | undefined = undefined;
     let photoUrl: string | undefined = undefined;
@@ -61,6 +63,8 @@ export default function Home() {
         description: 'Failed to detect ingredients. Please try again with a different image.',
         variant: 'destructive',
       });
+    } finally {
+      setUploadingImage(false);
     }
   };
 
@@ -185,7 +189,9 @@ export default function Home() {
               }
             }}
           />
-          <Button onClick={handleImageUpload} disabled={(!imageUrl && !imageFile)}>Detect Ingredients</Button>
+          <Button onClick={handleImageUpload} disabled={(!imageUrl && !imageFile) || uploadingImage}>
+            {uploadingImage ? 'Loading...' : 'Detect Ingredients'}
+          </Button>
           {isImageUploaded && (
             <div className="flex justify-center">
               <img
@@ -232,6 +238,7 @@ export default function Home() {
           ) : (
             <p className="text-sm">No recipes found. Please detect ingredients and search for recipes.</p>
           )}
+          <Button onClick={handleRecipeSearch} disabled={!ingredients.length}>Find Recipes</Button>
         </CardContent>
       </Card>
 
