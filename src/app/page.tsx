@@ -1,4 +1,3 @@
-
 'use client';
 
 import {useState} from 'react';
@@ -16,6 +15,7 @@ import {cn} from '@/lib/utils';
 
 export default function Home() {
   const [imageUrl, setImageUrl] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [recipes, setRecipes] = useState<string[]>([]);
   const [adaptedRecipe, setAdaptedRecipe] = useState('');
@@ -27,17 +27,27 @@ export default function Home() {
 
   const handleImageUpload = async () => {
     setIsImageUploaded(false);
-    if (!imageUrl) {
+
+    let photoData: string | undefined = undefined;
+    let photoUrl: string | undefined = undefined;
+
+    if (imageFile) {
+      photoData = await readFileAsBase64(imageFile);
+      photoUrl = undefined;
+    } else if (imageUrl) {
+      photoUrl = imageUrl;
+      photoData = undefined;
+    } else {
       toast({
         title: 'Error',
-        description: 'Please enter an image URL.',
+        description: 'Please enter an image URL or upload an image.',
         variant: 'destructive',
       });
       return;
     }
 
     try {
-      const ingredientResult = await detectIngredients({photoUrl: imageUrl});
+      const ingredientResult = await detectIngredients({photoUrl, photoData});
       setIngredients(ingredientResult.ingredients);
       setIsImageUploaded(true);
       toast({
@@ -53,6 +63,21 @@ export default function Home() {
       });
     }
   };
+
+  const readFileAsBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result as string;
+        resolve(result);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
 
   const handleRecipeSearch = async () => {
     if (!ingredients.length) {
@@ -148,11 +173,23 @@ export default function Home() {
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
           />
-          <Button onClick={handleImageUpload} disabled={!imageUrl}>Detect Ingredients</Button>
+           <Input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              if (e.target.files && e.target.files.length > 0) {
+                setImageFile(e.target.files[0]);
+                setImageUrl(''); // Clear URL when file is selected
+              } else {
+                  setImageFile(null);
+              }
+            }}
+          />
+          <Button onClick={handleImageUpload} disabled={(!imageUrl && !imageFile)}>Detect Ingredients</Button>
           {isImageUploaded && (
             <div className="flex justify-center">
               <img
-                src={imageUrl}
+                src={imageFile ? URL.createObjectURL(imageFile) : imageUrl}
                 alt="Uploaded Ingredient"
                 className="max-h-48 object-contain rounded-md"
               />

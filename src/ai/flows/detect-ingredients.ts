@@ -1,4 +1,3 @@
-// Use server directive is required for Genkit flows.
 'use server';
 
 /**
@@ -13,8 +12,12 @@ import {ai} from '@/ai/ai-instance';
 import {z} from 'genkit';
 
 const DetectIngredientsInputSchema = z.object({
-  photoUrl: z.string().describe('The URL of the ingredient photo.'),
+  photoUrl: z.string().describe('The URL of the ingredient photo.').optional(),
+  photoData: z.string().describe('The base64 encoded data of the ingredient photo.').optional(),
+}).refine(data => !!data.photoUrl !== !!data.photoData, {
+  message: "Either photoUrl or photoData must be provided, but not both.",
 });
+
 export type DetectIngredientsInput = z.infer<typeof DetectIngredientsInputSchema>;
 
 const DetectIngredientsOutputSchema = z.object({
@@ -32,7 +35,8 @@ const prompt = ai.definePrompt({
   name: 'detectIngredientsPrompt',
   input: {
     schema: z.object({
-      photoUrl: z.string().describe('The URL of the ingredient photo.'),
+      photoUrl: z.string().describe('The URL of the ingredient photo.').optional(),
+	  photoData: z.string().describe('The base64 encoded data of the ingredient photo.').optional(),
     }),
   },
   output: {
@@ -44,7 +48,11 @@ const prompt = ai.definePrompt({
   },
   prompt: `You are a chef. Please identify the ingredients shown in the following photo:
 
+{{#if photoUrl}}
 Photo: {{media url=photoUrl}}
+{{else}}
+Photo: {{media data=photoData}}
+{{/if}}
 
 List the ingredients as a simple list of strings. Do not include any other text.`,
 });
