@@ -9,8 +9,8 @@
  * - FindRecipesOutput - The return type for the findRecipes function.
  */
 
-import {ai} from '@/ai/ai-instance';
-import {z} from 'genkit';
+import { ai } from '@/ai/ai-instance';
+import { z } from 'genkit';
 
 const FindRecipesInputSchema = z.object({
   ingredients: z.array(z.string()).describe('A list of ingredients to find recipes for.'),
@@ -55,7 +55,7 @@ const findRecipesFlow = ai.defineFlow<
   inputSchema: FindRecipesInputSchema,
   outputSchema: FindRecipesOutputSchema,
 },
-async input => {
-  const {output} = await findRecipesPrompt(input);
-  return output!;
-});
+  async input => {
+    const { output } = await findRecipesPrompt(input);
+    return output!;
+  });

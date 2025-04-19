@@ -9,8 +9,8 @@
  * - AdaptRecipeOutput - The return type for the adaptRecipe function.
  */
 
-import {ai} from '@/ai/ai-instance';
-import {z} from 'genkit';
+import { ai } from '@/ai/ai-instance';
+import { z } from 'genkit';
 
 const AdaptRecipeInputSchema = z.object({
   recipe: z.string().describe('The recipe to adapt.'),
@@ -59,7 +59,7 @@ const adaptRecipeFlow = ai.defineFlow<
     outputSchema: AdaptRecipeOutputSchema,
   },
   async input => {
-    const {output} = await adaptRecipePrompt(input);
+    const { output } = await adaptRecipePrompt(input);
     return output!;
   }
 );

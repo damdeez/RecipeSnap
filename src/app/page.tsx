@@ -1,17 +1,15 @@
 'use client';
 
-import {useState} from 'react';
-import {Button} from '@/components/ui/Button';
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/Card';
-import {Input} from '@/components/ui/Input';
-import {Textarea} from '@/components/ui/Textarea';
-import {detectIngredients} from '@/ai/flows/detect-ingredients';
-import {findRecipes} from '@/ai/flows/find-recipes';
-import {adaptRecipe} from '@/ai/flows/adapt-recipe';
-import {toast} from '@/hooks/use-toast';
-import {useToast} from '@/hooks/use-toast';
-import {Copy, Check} from 'lucide-react';
-import {cn} from '@/lib/utils';
+import { useState } from 'react';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Textarea';
+import { detectIngredients } from '@/ai/flows/detect-ingredients';
+import { findRecipes } from '@/ai/flows/find-recipes';
+import { adaptRecipe } from '@/ai/flows/adapt-recipe';
+import { useToast } from '@/hooks/use-toast';
+import { Copy, Check } from 'lucide-react';
 
 export default function Home() {
   const [imageUrl, setImageUrl] = useState('');
@@ -22,7 +20,7 @@ export default function Home() {
   const [adaptingRecipe, setAdaptingRecipe] = useState(false);
   const [preferences, setPreferences] = useState('');
   const [isImageUploaded, setIsImageUploaded] = useState(false);
-  const {toast} = useToast();
+  const { toast } = useToast();
   const [copied, setCopied] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
 
@@ -49,7 +47,7 @@ export default function Home() {
     }
 
     try {
-      const ingredientResult = await detectIngredients({photoUrl, photoData});
+      const ingredientResult = await detectIngredients({ photoUrl, photoData });
       setIngredients(ingredientResult.ingredients);
       setIsImageUploaded(true);
       toast({
@@ -94,7 +92,7 @@ export default function Home() {
     }
 
     try {
-      const recipeResult = await findRecipes({ingredients});
+      const recipeResult = await findRecipes({ ingredients });
       setRecipes(recipeResult.recipes);
       toast({
         title: 'Recipes Found!',
@@ -131,7 +129,7 @@ export default function Home() {
 
     setAdaptingRecipe(true);
     try {
-      const adaptationResult = await adaptRecipe({recipe: recipes[0], preferences});
+      const adaptationResult = await adaptRecipe({ recipe: recipes[0], preferences });
       setAdaptedRecipe(adaptationResult.adaptedRecipe);
       toast({
         title: 'Recipe Adapted!',
@@ -177,7 +175,7 @@ export default function Home() {
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
           />
-           <Input
+          <Input
             type="file"
             accept="image/*"
             onChange={(e) => {
@@ -185,7 +183,7 @@ export default function Home() {
                 setImageFile(e.target.files[0]);
                 setImageUrl(''); // Clear URL when file is selected
               } else {
-                  setImageFile(null);
+                setImageFile(null);
               }
             }}
           />

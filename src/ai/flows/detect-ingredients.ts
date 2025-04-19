@@ -8,8 +8,8 @@
  * - DetectIngredientsOutput - The return type for the detectIngredients function.
  */
 
-import {ai} from '@/ai/ai-instance';
-import {z} from 'genkit';
+import { ai } from '@/ai/ai-instance';
+import { z } from 'genkit';
 
 const DetectIngredientsInputSchema = z.object({
   photoUrl: z.string().describe('The URL of the ingredient photo.').optional(),
@@ -36,7 +36,7 @@ const prompt = ai.definePrompt({
   input: {
     schema: z.object({
       photoUrl: z.string().describe('The URL of the ingredient photo.').optional(),
-	  photoData: z.string().describe('The base64 encoded data of the ingredient photo.').optional(),
+      photoData: z.string().describe('The base64 encoded data of the ingredient photo.').optional(),
     }),
   },
   output: {
@@ -65,7 +65,7 @@ const detectIngredientsFlow = ai.defineFlow<
   inputSchema: DetectIngredientsInputSchema,
   outputSchema: DetectIngredientsOutputSchema,
 },
-async input => {
-  const {output} = await prompt(input);
-  return output!;
-});
+  async input => {
+    const { output } = await prompt(input);
+    return output!;
+  });
