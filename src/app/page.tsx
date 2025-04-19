@@ -1,10 +1,10 @@
 'use client';
 
 import {useState} from 'react';
-import {Button} from '@/components/ui/button';
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
-import {Input} from '@/components/ui/input';
-import {Textarea} from '@/components/ui/textarea';
+import {Button} from '@/components/Ui/Button';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/Ui/Card';
+import {Input} from '@/components/Ui/Input';
+import {Textarea} from '@/components/Ui/Textarea';
 import {detectIngredients} from '@/ai/flows/detect-ingredients';
 import {findRecipes} from '@/ai/flows/find-recipes';
 import {adaptRecipe} from '@/ai/flows/adapt-recipe';
@@ -276,3 +276,4 @@ export default function Home() {
     </div>
   );
 }
+
